@@ -2,48 +2,44 @@
 
 {% block head %}
  <script type="text/javascript">
-    var myApp = angular.module('myApp', ['ngResource'])
-    myApp.factory("User", function($resource) {
-        return $resource("/api/users/:Id", { Id: "@Id"}, {
-          "update": {method:"PUT"},
-          "query": { method:"GET", isArray: true, transformResponse: function(data) { return angular.fromJson(data).objects; } }
-        });
-    });
-    myApp.controller('MyController', function($scope, $http, $resource, User) {
-      var users = User.query(function() {
-        $scope.users = users;
-      });
+    var myApp = angular.module('myApp', ['ui.router'])
+
+    myApp.config(function($stateProvider, $urlRouterProvider) {
+      $stateProvider
+        .state('home', { url: '/home', templateUrl: '/static/partials/home.html'})
+  .state('list', { url: '/list', templateUrl: '/static/partials/list.html'})
+  .state('list.item', {
+                url: '/:item',
+                templateUrl: 'static/partials/list.item.html',
+                controller: function($scope, $stateParams) {
+                    $scope.item = $stateParams.item;
+                }
+            })
+    })
+    
+    myApp.controller('MyController', function($scope, $http) {
+    
+        $scope.shoppingList = [
+            {name: 'Milk'},
+            {name: 'Eggs'},
+            {name: 'Bread'},
+            {name: 'Cheese'},
+            {name: 'Ham'}
+        ];
+
+        
+        
       
-      $scope.addUser = function() {
-        u = new User()
-        u.username = $scope.newUser.username
-        u.fullname = $scope.newUser.fullname
-        u.$save(function(data) {
-          console.log(data);
-          $scope.users.push(data);
-          console.log($scope.users);
-        });
-        
-        
-      }
     });
   </script>
 {% endblock %}
 
 {% block body %}
 <div ng-app="myApp" ng-controller="MyController">
-<h1 class="page-header">Users</h1>
-  {% raw %}
-  <ol>
-    <li ng-repeat="user in users">{{ user.fullname }} ({{ user.username }})</li>
-  </ol>
-  <form ng-submit="addUser()">
-    <label>Username</label>
-    <input type="text" ng-model="newUser.username">
-    <label>Full name</label>
-    <input type="text" ng-model="newUser.fullname">
-    <button class="btn">Add User</button>
-  </form>
-  {% endraw %}
+  <ul class="nav nav-pills">
+    <li><a href="#/home">Home</a></li>
+    <li><a href="#/list">Shopping List</a></li>
+  </ul>
+<div ui-view></div>
 </div>
 {% endblock %}

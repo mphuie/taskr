@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block head %}
+ <script src="/static/js/app.js"></script>
+{% endblock %}
+
+{% block body %}
+<div ng-app="myApp" ng-controller="MyController">
+
+<div ui-view></div>
+</div>
+{% endblock %}

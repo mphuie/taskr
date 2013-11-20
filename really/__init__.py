@@ -10,7 +10,8 @@ db = SQLAlchemy(app)
 
 manager = flask.ext.restless.APIManager(app,  flask_sqlalchemy_db=db)
 
-from myapp.views import aview
-from myapp.models import User
+from really.views import aview
+from really.models import Project, Issue
 
-manager.create_api(User, methods=['GET', 'POST', 'DELETE'])
+manager.create_api(Project, methods=['GET', 'POST', 'DELETE'])
+manager.create_api(Issue, methods=['GET', 'POST', 'DELETE'])
